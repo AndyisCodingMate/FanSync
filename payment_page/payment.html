@@ -1,0 +1,65 @@
+<!-- payment.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concert Seat Booking</title>
+    <style>
+        .section-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px;
+        }
+        .section-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            text-align: center;
+            width: 200px;
+        }
+        .quantity-control {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        #payment-form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <div class="section-container">
+        <div class="section-box">
+            <h3>Section A</h3>
+            <p>Available: <span id="available-A">20</span></p>
+            <div class="quantity-control">
+                <button onclick="decreaseQuantity('A')">-</button>
+                <span id="quantity-A">0</span>
+                <button onclick="increaseQuantity('A')">+</button>
+            </div>
+        </div>
+        <!-- Repeat for sections B, C, and D -->
+        <!-- Similar structure for other sections -->
+    </div>
+
+    <form id="payment-form">
+        <h3>Payment Details (Test Mode)</h3>
+        <div id="card-element"></div>
+        <div id="card-errors" role="alert"></div>
+        <button type="submit">Purchase Tickets</button>
+        <p>Total: $<span id="total-amount">0</span></p>
+    </form>
+
+    <script src="script.js"></script>
+</body>
+</html>
