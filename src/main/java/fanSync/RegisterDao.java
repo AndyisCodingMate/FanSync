@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RegisterDao {
@@ -46,5 +47,32 @@ public class RegisterDao {
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	public Member Login(String email, String password) {
+		loadDriver(dbdriver);
+		Connection con = getConnection();
+		Member member  = null;
+		String query = "SELECT MemberID, Name, Email, Password FROM FanSync.members WHERE Email = ? AND Password = ? ";
+		try {
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setString(1, email);
+			ps.setString(2, password);
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				int id = rs.getInt("MemberID");
+				String name = rs.getString("Name");
+				String email1 = rs.getString("Email");
+				String pass = rs.getString("Password");
+				
+				member = new Member(name, email1, pass);
+				member.setID(id);
+			};
+		} 
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return member;
 	}
 }

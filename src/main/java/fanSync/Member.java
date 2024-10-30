@@ -2,6 +2,7 @@ package fanSync;
 
 public class Member {
 	private String name,email,password;
+	private int id;
 
 	public Member() {
 		super();
@@ -39,6 +40,13 @@ public class Member {
 		this.email = email;
 	}
 	
+	public int getID() {
+		return id;
+	}
+	
+	public void setID(int id) {
+		this.id = id;
+	}
 	
 
 
