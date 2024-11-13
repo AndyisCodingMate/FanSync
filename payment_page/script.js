@@ -1,50 +1,73 @@
 // script.js
-const stripe = Stripe('your_publishable_test_key');
+const stripe = Stripe('pk_test_your_publishable_key');
 const elements = stripe.elements();
 
-// Initialize quantities
-const sections = ['A', 'B', 'C', 'D'];
-const quantities = {
-    A: 0,
-    B: 0,
-    C: 0,
-    D: 0
+// Initialize quantities and prices for each section
+const sections = {
+    A: { price: 100, available: 20, quantity: 0 },
+    B: { price: 80, available: 20, quantity: 0 },
+    C: { price: 60, available: 20, quantity: 0 },
+    D: { price: 40, available: 20, quantity: 0 }
 };
-const available = {
-    A: 20,
-    B: 20,
-    C: 20,
-    D: 20
-};
-const PRICE_PER_TICKET = 10; // Test price in dollars
 
-// Create card Element
-const card = elements.create('card');
+// Create card Element with custom styling
+const cardStyle = {
+    base: {
+        fontSize: '16px',
+        color: '#32325d',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        '::placeholder': {
+            color: '#aab7c4'
+        }
+    },
+    invalid: {
+        color: '#fa755a',
+        iconColor: '#fa755a'
+    }
+};
+
+const card = elements.create('card', { style: cardStyle });
 card.mount('#card-element');
 
-function updateDisplay(section) {
-    document.getElementById(`quantity-${section}`).textContent = quantities[section];
-    document.getElementById(`available-${section}`).textContent = available[section];
-    updateTotal();
+// Handle real-time validation errors
+card.addEventListener('change', function(event) {
+    const displayError = document.getElementById('card-errors');
+    if (event.error) {
+        displayError.textContent = event.error.message;
+    } else {
+        displayError.textContent = '';
+    }
+});
+
+function calculateTotal() {
+    return Object.entries(sections).reduce((total, [section, data]) => {
+        return total + (data.quantity * data.price);
+    }, 0);
 }
 
-function updateTotal() {
-    const total = Object.values(quantities).reduce((sum, qty) => sum + qty, 0) * PRICE_PER_TICKET;
-    document.getElementById('total-amount').textContent = total;
+function updateDisplay(section) {
+    // Update quantity display
+    document.getElementById(`quantity-${section}`).textContent = sections[section].quantity;
+    // Update available seats
+    document.getElementById(`available-${section}`).textContent = sections[section].available;
+    // Update total amount
+    document.getElementById('total-amount').textContent = calculateTotal();
 }
 
 function increaseQuantity(section) {
-    if (available[section] > 0) {
-        quantities[section]++;
-        available[section]--;
+    if (sections[section].available > 0) {
+        sections[section].quantity++;
+        sections[section].available--;
         updateDisplay(section);
+    } else {
+        alert(`Section ${section} is sold out!`);
     }
 }
 
 function decreaseQuantity(section) {
-    if (quantities[section] > 0) {
-        quantities[section]--;
-        available[section]++;
+    if (sections[section].quantity > 0) {
+        sections[section].quantity--;
+        sections[section].available++;
         updateDisplay(section);
     }
 }
@@ -52,23 +75,56 @@ function decreaseQuantity(section) {
 // Handle form submission
 document.getElementById('payment-form').addEventListener('submit', async (event) => {
     event.preventDefault();
-
-    const totalAmount = Object.values(quantities).reduce((sum, qty) => sum + qty, 0) * PRICE_PER_TICKET;
-
+    
+    const totalAmount = calculateTotal();
+    
     if (totalAmount === 0) {
         alert('Please select at least one ticket');
         return;
     }
 
-    // For testing, we'll just show a success message
-    alert('Test Payment Successful! This is a mock implementation.');
-    
-    // In a real implementation, you would:
-    // 1. Send request to your backend
-    // 2. Create a payment intent
-    // 3. Confirm the payment
-    // 4. Handle the response
+    // Create a summary of the purchase
+    const purchaseSummary = Object.entries(sections)
+        .filter(([_, data]) => data.quantity > 0)
+        .map(([section, data]) => 
+            `Section ${section}: ${data.quantity} tickets at $${data.price} each`
+        ).join('\n');
+
+    // Show confirmation dialog
+    const confirmPurchase = confirm(
+        `Purchase Summary:\n${purchaseSummary}\n\nTotal: $${totalAmount}\n\nProceed with purchase?`
+    );
+
+    if (confirmPurchase) {
+        try {
+            // Mock successful payment
+            alert('Test Payment Successful!\n\nThis is a mock implementation.\n' + 
+                  'In a real application, this would process through Stripe.');
+            
+            // Reset quantities after successful purchase
+            Object.keys(sections).forEach(section => {
+                sections[section].quantity = 0;
+                updateDisplay(section);
+            });
+            
+        } catch (error) {
+            document.getElementById('card-errors').textContent = error.message;
+        }
+    }
 });
 
-// Initialize displays
-sections.forEach(section => updateDisplay(section));
+// Initialize displays for all sections
+Object.keys(sections).forEach(section => updateDisplay(section));
+
+// Add keyboard support for quantity controls
+document.addEventListener('keydown', (event) => {
+    const activeElement = document.activeElement;
+    if (activeElement.closest('.quantity-control')) {
+        const section = activeElement.closest('.section-box').querySelector('h3').textContent.slice(-1);
+        if (event.key === 'ArrowUp') {
+            increaseQuantity(section);
+        } else if (event.key === 'ArrowDown') {
+            decreaseQuantity(section);
+        }
+    }
+});
