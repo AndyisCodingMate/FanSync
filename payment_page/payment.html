@@ -1,42 +1,96 @@
 <!-- payment.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Concert Seat Booking</title>
-    <style>
-        .section-container {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px;
-        }
-        .section-box {
-            border: 1px solid #ccc;
-            padding: 20px;
-            text-align: center;
-            width: 200px;
-        }
-        .quantity-control {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        button {
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-        #payment-form {
-            max-width: 400px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-        }
-    </style>
-    <script src="https://js.stripe.com/v3/"></script>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Concert Seat Booking</title>
+        <style>
+            body {
+                background-color: #6a1b9a; /* Deep purple background */
+                color: white;
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+            }
+    
+            .section-container {
+                display: flex;
+                justify-content: space-around;
+                margin: 20px;
+            }
+    
+            .section-box {
+                background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+                border: 2px solid rgba(255, 255, 255, 0.2);
+                border-radius: 10px;
+                padding: 20px;
+                text-align: center;
+                width: 200px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+    
+            .quantity-control {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                margin: 10px 0;
+            }
+    
+            button {
+                padding: 5px 10px;
+                cursor: pointer;
+                background-color: #9c27b0; /* Lighter purple for buttons */
+                color: white;
+                border: none;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+            }
+    
+            button:hover {
+                background-color: #ba68c8; /* Even lighter purple on hover */
+            }
+    
+            #payment-form {
+                max-width: 400px;
+                margin: 20px auto;
+                padding: 20px;
+                background-color: rgba(255, 255, 255, 0.9); /* Almost white, slightly transparent */
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                color: #333; /* Dark text for payment form */
+            }
+    
+            #card-element {
+                margin: 20px 0;
+                padding: 10px;
+                border: 1px solid #e0e0e0;
+                border-radius: 4px;
+                background-color: white;
+            }
+    
+            #card-errors {
+                color: #f44336; /* Red for errors */
+                margin-top: 10px;
+                text-align: center;
+            }
+    
+            h3 {
+                color: white;
+                margin-bottom: 15px;
+            }
+    
+            #payment-form h3 {
+                color: #333; /* Dark text for payment form heading */
+            }
+    
+            span {
+                font-size: 1.1em;
+            }
+        </style>
+        <script src="https://js.stripe.com/v3/"></script>
+    </head>
 <body>
     <div class="section-container">
         <div class="section-box">
@@ -48,8 +102,42 @@
                 <button onclick="increaseQuantity('A')">+</button>
             </div>
         </div>
-        <!-- Repeat for sections B, C, and D -->
-        <!-- Similar structure for other sections -->
+    </div>
+
+    <div class="section-container">
+        <div class="section-box">
+            <h3>Section B</h3>
+            <p>Available: <span id="available-B">20</span></p>
+            <div class="quantity-control">
+                <button onclick="decreaseQuantity('B')">-</button>
+                <span id="quantity-B">0</span>
+                <button onclick="increaseQuantity('B')">+</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <div class="section-box">
+            <h3>Section C</h3>
+            <p>Available: <span id="available-C">20</span></p>
+            <div class="quantity-control">
+                <button onclick="decreaseQuantity('C')">-</button>
+                <span id="quantity-C">0</span>
+                <button onclick="increaseQuantity('C')">+</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <div class="section-box">
+            <h3>Section D</h3>
+            <p>Available: <span id="available-D">20</span></p>
+            <div class="quantity-control">
+                <button onclick="decreaseQuantity('D')">-</button>
+                <span id="quantity-D">0</span>
+                <button onclick="increaseQuantity('D')">+</button>
+            </div>
+        </div>
     </div>
 
     <form id="payment-form">
