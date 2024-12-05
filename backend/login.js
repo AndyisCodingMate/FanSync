@@ -4,12 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageDiv = document.getElementById('message');
 
     loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const formData = {
-            email: document.getElementById('email').value,
-            password: document.getElementById('password').value
-        };
+        e.preventDefault(); // Prevent default form submission
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
         try {
             const response = await fetch('http://localhost:8081/api/login', {
@@ -17,27 +15,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({ email, password }),
             });
 
             const data = await response.json();
-            
+
             if (response.ok) {
                 messageDiv.textContent = 'Login successful!';
                 messageDiv.style.color = 'green';
-                // Store user data if needed
+
+                // Store user info and redirect
                 localStorage.setItem('user', JSON.stringify(data.user));
-                // Redirect after successful login (adjust the path as needed)
-                setTimeout(() => {
-                    window.location.href = '/main.html';
-                }, 1500);
+                window.location.href = '/tickets.html';
             } else {
-                messageDiv.textContent = data.error || 'Login failed';
+                messageDiv.textContent = data.error || 'Invalid email or password.';
                 messageDiv.style.color = 'red';
             }
         } catch (error) {
-            console.error('Error:', error);
-            messageDiv.textContent = 'An error occurred during login';
+            console.error('Error during login:', error);
+            messageDiv.textContent = 'An error occurred. Please try again.';
             messageDiv.style.color = 'red';
         }
     });

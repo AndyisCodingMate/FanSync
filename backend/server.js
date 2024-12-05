@@ -10,7 +10,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('frontend'));
+
+// Serve static files from the 'frontend' folder
+app.use(express.static(path.join(__dirname, '../frontend'))); // Updated to ensure correct path resolution
+
+// Debugging middleware to log all incoming requests
+app.use((req, res, next) => {
+    console.log(`Request URL: ${req.url}`);
+    next();
+});
 
 // Database connection
 const db = mysql.createConnection({
@@ -32,8 +40,8 @@ db.connect((err) => {
 // Registration endpoint
 app.post('/api/register', (req, res) => {
     const { name, email, password } = req.body;
+    console.log('Received registration request:', req.body);
     
-    // Basic validation
     if (!name || !email || !password) {
         return res.status(400).json({ error: "All fields are required" });
     }
@@ -52,11 +60,9 @@ app.post('/api/register', (req, res) => {
     });
 });
 
-// Add new login endpoint
+// Login endpoint
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
-    
-    // Log the received data for debugging
     console.log('Login attempt:', { email, password });
 
     if (!email || !password) {
@@ -88,11 +94,32 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// Serve HTML files
-app.get('/', (req, res) => {
+// Events endpoint
+app.get('/api/events', (req, res) => {
+    const sql = "SELECT * FROM events";
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: "Failed to fetch events" });
+        }
+        res.json(results);
+    });
+});
+
+// Explicit routes for HTML files (if static middleware fails)
+app.get('/login.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/login.html'));
+});
+
+app.get('/register.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/register.html'));
 });
 
+app.get('/register.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/tickets.html'));
+});
+
+// Start the server
 app.listen(8081, () => {
     console.log("Server running on port 8081");
 });

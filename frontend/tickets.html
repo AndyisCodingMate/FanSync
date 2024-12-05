@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <title>MyTickets Page</title>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-8">
+        <!-- Upcoming Events Section -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Upcoming Events</h2>
+                <a href="#" class="text-gray-500 hover:text-gray-700">View All</a>
+            </div>
+            
+            <!-- Container for upcoming events -->
+            <div id="upcomingEvents" class="space-y-4">
+                <!-- Event cards will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Previous Events Section -->
+        <div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Previous Events</h2>
+                <a href="#" class="text-gray-500 hover:text-gray-700">View All</a>
+            </div>
+            
+            <!-- Container for previous events -->
+            <div id="previousEvents" class="space-y-4">
+                <!-- Event cards will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the events.js file -->
+    <script src="events.js"></script>
+</body>
+</html>

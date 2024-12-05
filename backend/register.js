@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = form.querySelector('input[name="password"]').value;
 
         try {
-            const response = await fetch('/register', {
+            const response = await fetch('http://localhost:8081/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 alert(data.message);
                 // Redirect to login page or clear form
+                window.location.href = '/tickets.html';
             } else {
                 alert(data.error);
             }

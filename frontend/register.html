@@ -63,7 +63,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
             messageDiv.textContent = 'Registration successful!';
             messageDiv.style.color = 'green';
             setTimeout(() => {
-                window.location.href = '/login.html';
+                window.location.href = '/tickets.html';
             }, 2000);
         } else {
             messageDiv.textContent = data.error || 'Registration failed';
