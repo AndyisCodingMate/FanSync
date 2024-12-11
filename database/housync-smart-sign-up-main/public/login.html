@@ -30,13 +30,13 @@
         function navigateToSignup() {
             window.location.href = 'signup.html';
         }
-
+    
         document.getElementById('login-form').addEventListener('submit', async function (event) {
             event.preventDefault();
-
+    
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-
+    
             try {
                 const response = await fetch('http://localhost:3000/login', {
                     method: 'POST',
@@ -45,21 +45,28 @@
                     },
                     body: JSON.stringify({ email, password }),
                 });
-
+    
                 const result = await response.json();
-
+    
                 if (response.status === 200) {
                     document.getElementById('message').textContent = 'Login successful!';
                     document.getElementById('message').style.color = 'green';
+    
+                    // Redirect to Check-In Page
+                    setTimeout(() => {
+                        window.location.href = 'checkin.html';
+                    }, 1000);
                 } else {
                     document.getElementById('message').textContent = result.message || 'Check email or password';
                     document.getElementById('message').style.color = 'red';
                 }
             } catch (error) {
+                console.error('Error connecting to server:', error);
                 document.getElementById('message').textContent = 'Error connecting to the server';
                 document.getElementById('message').style.color = 'red';
             }
         });
     </script>
+    
 </body>
 </html>
