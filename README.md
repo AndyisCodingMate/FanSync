@@ -221,6 +221,3 @@ Allows a verified user to check into an event.
 5. **Eden AI Integration**:  
    * Verify that Eden AI API keys are valid.  
    * Check logs for errors during file uploads or status polling.  
-6. 
-
-This README provides all necessary steps to set up and run your Fansync application successfully\! This Markdown file will render correctly on GitHub with proper formatting for headings (`#`), code blocks (triple backticks), and lists (`-`, `1.`).  
