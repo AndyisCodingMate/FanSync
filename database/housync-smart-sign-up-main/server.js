@@ -35,26 +35,38 @@ app.get('/', (req, res) => {
 
 // Signup route
 app.post('/signup', async (req, res) => {
-    const { firstName, lastName, email, password, userType } = req.body;
+    const { firstName, lastName, email, password, userType, verified, govIdNumber, uploadedImage } = req.body;
+
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const query = `
-            INSERT INTO users (first_name, last_name, email, password, user_type)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (first_name, last_name, email, password, user_type, verified, gov_id_number, uploaded_image)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
-        db.query(query, [firstName, lastName, email, hashedPassword, userType], (err) => {
-            if (err) {
-                if (err.code === 'ER_DUP_ENTRY') {
-                    return res.status(400).send('Email already exists');
+        
+        db.query(query,
+            [firstName, lastName, email.toLowerCase(), hashedPassword, userType.toLowerCase(), verified || false, govIdNumber || null, uploadedImage || null],
+            (err) => {
+                if (err) {
+                    console.error('Database error:', err);
+
+                    if (err.code === 'ER_DUP_ENTRY') {
+                        return res.status(400).send({ message: 'Email already exists' });
+                    }
+
+                    return res.status(500).send({ message: 'Database error' });
                 }
-                return res.status(500).send('Database error');
+
+                res.status(201).json({ message: 'User registered successfully' });
             }
-            res.status(201).json({ message: 'User registered successfully' });
-        });
+        );
     } catch (error) {
-        res.status(500).send('Server error');
+        console.error('Error in /signup route:', error);
+        res.status(500).send({ message: 'Error registering user' });
     }
 });
+
+
 
 // Login route
 app.post('/login', (req, res) => {
